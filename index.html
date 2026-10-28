@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ale 💖 - De tu niño</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-love {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Night Romantic Gradient Animated Background */
+        .romantic-bg {
+            background: linear-gradient(-45deg, #1d1135, #3c1642, #1e1b4b, #4c1d95, #2e1065);
+            background-size: 400% 400%;
+            animation: gradientBG 18s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Canvas layered setup */
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Floating UI Glassmorphic styling */
+        .glass-panel {
+            background: rgba(30, 16, 50, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(244, 114, 182, 0.35);
+            box-shadow: 0 8px 32px 0 rgba(192, 38, 211, 0.3);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 182, 217, 0.4);
+            color: #fce7f3;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-button:hover {
+            background: rgba(244, 114, 182, 0.3);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+        }
+
+        .glass-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Glowing text effect */
+        .glow-text {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.9),
+                         0 0 25px rgba(244, 114, 182, 0.8),
+                         0 0 40px rgba(217, 70, 239, 0.6);
+        }
+
+        /* Letter Modal Envelope Shadow */
+        .envelope-shadow {
+            box-shadow: 0 20px 60px rgba(217, 70, 239, 0.4);
+        }
+
+        /* Custom scrollbar for letter */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(46, 16, 101, 0.5);
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(244, 114, 182, 0.6);
+            border-radius: 10px;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        .animate-pulse-gentle {
+            animation: gentlePulse 2.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="romantic-bg min-h-screen w-screen overflow-hidden select-none relative text-pink-100">
+
+    <!-- Interactive Canvas Background for Flowers, Butterflies & Particles -->
+    <canvas id="gardenCanvas" class="absolute inset-0 z-0 cursor-pointer"></canvas>
+
+    <!-- Top Overlay Header / Hero Title -->
+    <header class="relative z-10 pt-5 md:pt-8 px-4 text-center pointer-events-none">
+        <div class="inline-block glass-panel px-6 py-4 sm:px-8 sm:py-5 rounded-3xl max-w-xl mx-auto shadow-2xl pointer-events-auto transition-transform hover:scale-105 duration-300">
+            <span class="inline-block text-pink-300 text-sm md:text-base font-semibold tracking-wider uppercase mb-1">
+                <i class="fa-solid fa-sparkles text-amber-300 mr-1"></i> Para Ale 💖
+            </span>
+            <h1 class="font-love text-4xl sm:text-5xl md:text-6xl text-pink-300 font-bold glow-text leading-tight my-1">
+                ¡Te quiero muchooo! &lt;3
+            </h1>
+            <p class="text-pink-200 text-xs sm:text-sm font-medium mt-1">
+                De parte de tu niño que te quiere mucho 🥺✨
+            </p>
+        </div>
+    </header>
+
+    <!-- Floating Action Controls (Bottom Bar) -->
+    <div class="fixed bottom-6 left-0 right-0 z-20 flex flex-wrap justify-center items-center gap-2 sm:gap-3 px-4 pointer-events-auto">
+        <button id="openLetterBtn" class="glass-button font-bold px-4 sm:px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg text-pink-200">
+            <i class="fa-solid fa-envelope-open-text text-xl text-pink-400"></i>
+            <span class="text-xs sm:text-sm">Abrir carta para Ale 💌</span>
+        </button>
+
+        <button id="bloomThousandBtn" class="glass-button font-bold px-4 sm:px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg text-amber-200">
+            <i class="fa-solid fa-seedling text-xl text-emerald-400"></i>
+            <span class="text-xs sm:text-sm">Regalarle mil flores 🌸</span>
+        </button>
+
+        <button id="changeTypeBtn" class="glass-button font-bold px-4 sm:px-5 py-3 rounded-2xl flex items-center gap-2 shadow-lg text-purple-200">
+            <i class="fa-solid fa-wand-magic-sparkles text-xl text-purple-400"></i>
+            <span id="currentFlowerLabel" class="text-xs sm:text-sm">Flor: Aleatoria</span>
+        </button>
+
+        <button id="soundToggleBtn" class="glass-button font-bold p-3 rounded-2xl flex items-center justify-center shadow-lg w-11 h-11" title="Sonido">
+            <i id="soundIcon" class="fa-solid fa-volume-xmark text-lg text-amber-300"></i>
+        </button>
+
+        <button id="clearGardenBtn" class="glass-button font-bold p-3 rounded-2xl flex items-center justify-center shadow-lg w-11 h-11 text-gray-300 hover:text-red-400" title="Reiniciar Jardín">
+            <i class="fa-solid fa-rotate-right text-lg"></i>
+        </button>
+    </div>
+
+    <!-- Onscreen Tap Prompt -->
+    <div id="tapPrompt" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none text-center animate-pulse-gentle">
+        <div class="glass-panel px-6 py-3 rounded-full text-pink-200 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xl border border-pink-400/40">
+            <i class="fa-solid fa-hand-pointer text-pink-400"></i>
+            Toca la pantalla para sembrar más flores para Ale 🌺
+        </div>
+    </div>
+
+    <!-- Love Letter Modal Dedicated to Ale -->
+    <div id="letterModal" class="fixed inset-0 z-30 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-500">
+        <div class="glass-panel bg-slate-900/85 max-w-lg w-full rounded-3xl p-6 sm:p-8 envelope-shadow transform scale-90 transition-all duration-500 relative border-2 border-pink-400/50">
+            
+            <!-- Close Button -->
+            <button id="closeLetterBtn" class="absolute top-4 right-4 text-pink-300 hover:text-white w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <!-- Letter Content Header -->
+            <div class="text-center mb-5">
+                <div class="w-16 h-16 bg-pink-500/20 text-pink-400 border border-pink-400/40 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <i class="fa-solid fa-heart text-2xl animate-bounce"></i>
+                </div>
+                <h2 class="font-love text-3xl sm:text-4xl text-pink-300 font-bold glow-text">Para mi niña hermosa, Ale</h2>
+                <p class="text-xs text-pink-400 font-semibold tracking-wider uppercase mt-1">Una notita directa desde el corazón</p>
+            </div>
+
+            <!-- Letter Body Text -->
+            <div class="text-pink-100 leading-relaxed space-y-4 max-h-[50vh] overflow-y-auto custom-scroll pr-2 text-sm sm:text-base">
+                <p class="font-medium">
+                    Hola Ale bonita! 🌷
+                </p>
+                <p>
+                    Hice este jardincito mágico pensando en ti y en la sonrisa tan linda que tienes. Cada flor que nace aquí florece con el mismo cariño gigantesco con el que te pienso todos los días.
+                </p>
+                <p>
+                    Quería dejarte un detalle especial para recordarte lo importante que eres para mí y para sacarte una sonrisa. Mereces que te regalen jardines enteros y todas las estrellas del cielo.
+                </p>
+                <p class="font-love text-2xl sm:text-3xl text-pink-300 text-center py-2 glow-text">
+                    ¡Te quiero muchooote! &lt;3
+                </p>
+                <div class="text-right text-sm text-pink-300/90 italic pt-2">
+                    Con todo mi amor,<br>
+                    <span class="font-bold text-pink-300 font-love text-2xl">De tu niño que te quiere mucho 🥺✨</span>
+                </div>
+            </div>
+
+            <!-- Modal Footer Button -->
+            <div class="mt-6 text-center">
+                <button id="closeLetterBtn2" class="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg shadow-pink-500/30 transition-all">
+                    Llenar el jardín de flores 🌸✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /**
+         * Romantic Garden Interactive Engine for Ale
+         */
+
+        const canvas = document.getElementById('gardenCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const flowers = [];
+        const particles = [];
+        const floatingHearts = [];
+        const butterflies = [];
+        const stars = [];
+
+        const flowerTypes = ['random', 'rose', 'tulip', 'daisy', 'sunflower', 'glowing'];
+        let currentTypeIndex = 0;
+
+        // Audio System via Web Audio API
+        let audioCtx = null;
+        let soundEnabled = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playChimeSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 1046.50, 1174.66];
+                const note = notes[Math.floor(Math.random() * notes.length)];
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(note, now);
+                osc.frequency.exponentialRampToValueAtTime(note * 1.4, now + 0.4);
+
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.8);
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initStars();
+        });
+
+        const rand = (min, max) => Math.random() * (max - min) + min;
+        const randChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        const petalColors = [
+            '#ff4d6d', '#ff758f', '#ff8fa3', '#ffb3c1',
+            '#e0aaff', '#c77dff', '#9d4edd',
+            '#ffb703', '#fd9e02', '#ffc6ff',
+            '#ffffff', '#f72585', '#38bdf8'
+        ];
+
+        // Background Starry Sky
+        function initStars() {
+            stars.length = 0;
+            const count = Math.floor((width * height) / 12000);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: rand(0, width),
+                    y: rand(0, height * 0.7),
+                    size: rand(0.5, 2),
+                    alpha: rand(0.2, 0.9),
+                    twinkleSpeed: rand(0.005, 0.02)
+                });
+            }
+        }
+
+        /**
+         * Floating Butterflies
+         */
+        class Butterfly {
+            constructor() {
+                this.reset();
+                this.x = rand(0, width);
+            }
+
+            reset() {
+                this.x = rand(-50, width + 50);
+                this.y = rand(height * 0.3, height * 0.85);
+                this.size = rand(8, 14);
+                this.color = randChoice(['#f472b6', '#c084fc', '#38bdf8', '#fbbf24']);
+                this.vx = rand(-0.8, 0.8);
+                this.vy = rand(-0.5, 0.5);
+                this.wingAngle = 0;
+                this.wingSpeed = rand(0.15, 0.25);
+            }
+
+            update() {
+                this.x += this.vx + Math.sin(this.wingAngle) * 0.5;
+                this.y += this.vy + Math.cos(this.wingAngle) * 0.3;
+                this.wingAngle += this.wingSpeed;
+
+                if (this.x < -60 || this.x > width + 60 || this.y < 0 || this.y > height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                const wingScale = Math.sin(this.wingAngle);
+
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+
+                // Left Wing
+                ctx.beginPath();
+                ctx.ellipse(-this.size * 0.5 * wingScale, 0, this.size * 0.6 * Math.abs(wingScale), this.size * 0.8, 0.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Right Wing
+                ctx.beginPath();
+                ctx.ellipse(this.size * 0.5 * wingScale, 0, this.size * 0.6 * Math.abs(wingScale), this.size * 0.8, -0.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Particle System for Magic Dust
+         */
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.vx = rand(-1.8, 1.8);
+                this.vy = rand(-2.5, -0.5);
+                this.size = rand(2, 5);
+                this.color = color || 'rgba(255, 255, 255, 0.9)';
+                this.alpha = 1;
+                this.decay = rand(0.01, 0.025);
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+                this.size = Math.max(0, this.size - 0.02);
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Floating Hearts
+         */
+        class FloatingHeart {
+            constructor() {
+                this.reset();
+                this.y = rand(0, height);
+            }
+
+            reset() {
+                this.x = rand(0, width);
+                this.y = height + rand(10, 50);
+                this.size = rand(12, 24);
+                this.speedY = rand(0.4, 1.2);
+                this.opacity = rand(0.3, 0.75);
+                this.color = randChoice(['#ff4d6d', '#ff758f', '#ffb3c1', '#e0aaff', '#f72585']);
+                this.swingAngle = rand(0, Math.PI * 2);
+                this.swingSpeed = rand(0.01, 0.03);
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.swingAngle += this.swingSpeed;
+                this.x += Math.sin(this.swingAngle) * 0.5;
+
+                if (this.y < -30) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = this.color;
+                ctx.font = `${this.size}px sans-serif`;
+                ctx.fillText('♥', this.x, this.y);
+                ctx.restore();
+            }
+        }
+
+        /**
+         * Flower Class
+         */
+        class Flower {
+            constructor(x, targetHeight, type = 'random') {
+                this.x = x;
+                this.groundY = height;
+                this.targetStemHeight = targetHeight;
+                this.currentStemHeight = 0;
+                this.growthSpeed = rand(3.5, 6.5);
+                
+                this.type = type === 'random' ? randChoice(['rose', 'tulip', 'daisy', 'sunflower', 'glowing']) : type;
+                this.color = randChoice(petalColors);
+                
+                this.maxSize = rand(22, 38);
+                this.currentSize = 0;
+                this.swayAngle = rand(0, Math.PI * 2);
+                this.swaySpeed = rand(0.015, 0.03);
+                this.swayAmount = rand(6, 16);
+
+                this.stemWidth = rand(3, 5);
+                this.stemColor = randChoice(['#2d6a4f', '#40916c', '#52b788']);
+                this.leafAngle = randChoice([-1, 1]) * rand(0.3, 0.6);
+                this.hasBloomed = false;
+            }
+
+            update() {
+                if (this.currentStemHeight < this.targetStemHeight) {
+                    this.currentStemHeight += this.growthSpeed;
+                    if (this.currentStemHeight >= this.targetStemHeight) {
+                        this.currentStemHeight = this.targetStemHeight;
+                    }
+                } else if (this.currentSize < this.maxSize) {
+                    this.currentSize += 0.8;
+                    if (!this.hasBloomed && this.currentSize >= this.maxSize) {
+                        this.hasBloomed = true;
+                        this.spawnBloomBurst();
+                    }
+                }
+
+                this.swayAngle += this.swaySpeed;
+            }
+
+            spawnBloomBurst() {
+                const tip = this.getTipPosition();
+                for (let i = 0; i < 14; i++) {
+                    particles.push(new Particle(tip.x, tip.y, this.color));
+                }
+            }
+
+            getTipPosition() {
+                const swayOffset = Math.sin(this.swayAngle) * this.swayAmount;
+                return {
+                    x: this.x + swayOffset,
+                    y: this.groundY - this.currentStemHeight
+                };
+            }
+
+            draw() {
+                const tip = this.getTipPosition();
+                const controlX = this.x + (Math.sin(this.swayAngle) * this.swayAmount * 0.5);
+                const controlY = this.groundY - (this.currentStemHeight * 0.5);
+
+                // Stem
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.groundY);
+                ctx.quadraticCurveTo(controlX, controlY, tip.x, tip.y);
+                ctx.strokeStyle = this.stemColor;
+                ctx.lineWidth = this.stemWidth;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Leaves
+                if (this.currentStemHeight > 40) {
+                    const leafY = this.groundY - (this.currentStemHeight * 0.4);
+                    const leafX = this.x + (Math.sin(this.swayAngle) * (this.swayAmount * 0.4));
+                    
+                    ctx.save();
+                    ctx.translate(leafX, leafY);
+                    ctx.rotate(this.leafAngle + Math.sin(this.swayAngle) * 0.1);
+                    ctx.fillStyle = this.stemColor;
+                    ctx.beginPath();
+                    ctx.ellipse(12, 0, 12, 5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // Petals
+                if (this.currentSize > 1) {
+                    ctx.translate(tip.x, tip.y);
+                    
+                    switch (this.type) {
+                        case 'rose':
+                            this.drawRose(this.currentSize, this.color);
+                            break;
+                        case 'tulip':
+                            this.drawTulip(this.currentSize, this.color);
+                            break;
+                        case 'daisy':
+                            this.drawDaisy(this.currentSize, this.color);
+                            break;
+                        case 'sunflower':
+                            this.drawSunflower(this.currentSize);
+                            break;
+                        case 'glowing':
+                        default:
+                            this.drawGlowingFlower(this.currentSize, this.color);
+                            break;
+                    }
+                }
+
+                ctx.restore();
+            }
+
+            drawRose(size, color) {
+                const petals = 7;
+                ctx.fillStyle = color;
+                for (let i = 0; i < petals; i++) {
+                    const angle = (i * Math.PI * 2) / petals;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.arc(size * 0.4, 0, size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+                ctx.fillStyle = '#be123c';
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawTulip(size, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.8, 0.2, Math.PI - 0.2);
+                ctx.lineTo(-size * 0.6, -size * 0.8);
+                ctx.lineTo(-size * 0.2, -size * 0.4);
+                ctx.lineTo(0, -size * 0.9);
+                ctx.lineTo(size * 0.2, -size * 0.4);
+                ctx.lineTo(size * 0.6, -size * 0.8);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawDaisy(size, color) {
+                const petals = 12;
+                ctx.fillStyle = color || '#ffffff';
+                for (let i = 0; i < petals; i++) {
+                    const angle = (i * Math.PI * 2) / petals;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.ellipse(size * 0.7, 0, size * 0.6, size * 0.2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+                ctx.fillStyle = '#fbbf24';
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawSunflower(size) {
+                const petals = 16;
+                ctx.fillStyle = '#f59e0b';
+                for (let i = 0; i < petals; i++) {
+                    const angle = (i * Math.PI * 2) / petals;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.ellipse(size * 0.8, 0, size * 0.7, size * 0.22, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+                ctx.fillStyle = '#78350f';
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.55, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawGlowingFlower(size, color) {
+                ctx.shadowBlur = 18;
+                ctx.shadowColor = color;
+                ctx.fillStyle = color;
+                
+                const petals = 5;
+                for (let i = 0; i < petals; i++) {
+                    const angle = (i * Math.PI * 2) / petals;
+                    ctx.save();
+                    ctx.rotate(angle);
+                    ctx.beginPath();
+                    ctx.arc(size * 0.6, 0, size * 0.45, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(0, 0, size * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Initialize Floating Hearts & Butterflies
+        for (let i = 0; i < 22; i++) {
+            floatingHearts.push(new FloatingHeart());
+        }
+        for (let i = 0; i < 6; i++) {
+            butterflies.push(new Butterfly());
+        }
+        initStars();
+
+        function seedInitialGarden() {
+            flowers.length = 0;
+            const count = Math.floor(width / 45);
+            for (let i = 0; i < count; i++) {
+                const x = (width / count) * i + rand(-15, 15);
+                const stemH = rand(height * 0.2, height * 0.45);
+                const flower = new Flower(x, stemH, 'random');
+                flower.currentStemHeight = stemH;
+                flower.currentSize = flower.maxSize;
+                flower.hasBloomed = true;
+                flowers.push(flower);
+            }
+        }
+
+        seedInitialGarden();
+
+        function plantFlowerAt(x) {
+            initAudio();
+            const stemHeight = rand(height * 0.22, height * 0.5);
+            const chosenType = flowerTypes[currentTypeIndex];
+            flowers.push(new Flower(x, stemHeight, chosenType));
+            
+            for (let i = 0; i < 10; i++) {
+                particles.push(new Particle(x, height - 10, '#f472b6'));
+            }
+
+            playChimeSound();
+
+            const prompt = document.getElementById('tapPrompt');
+            if (prompt) {
+                prompt.style.opacity = '0';
+                setTimeout(() => prompt.remove(), 500);
+            }
+        }
+
+        // Fill screen with flowers action
+        function bloomThousandFlowers() {
+            initAudio();
+            const additional = 20;
+            for (let i = 0; i < additional; i++) {
+                setTimeout(() => {
+                    plantFlowerAt(rand(20, width - 20));
+                }, i * 80);
+            }
+        }
+
+        canvas.addEventListener('click', (e) => plantFlowerAt(e.clientX));
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 0) {
+                plantFlowerAt(e.touches[0].clientX);
+            }
+        }, { passive: true });
+
+        /**
+         * Main Render Loop
+         */
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Draw Twinkling Stars
+            stars.forEach(star => {
+                star.alpha += Math.sin(Date.now() * star.twinkleSpeed) * 0.01;
+                star.alpha = Math.max(0.2, Math.min(0.9, star.alpha));
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 2. Ambient Hearts
+            floatingHearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+
+            // 3. Meadow Floor Glow
+            ctx.fillStyle = 'rgba(20, 83, 45, 0.4)';
+            ctx.beginPath();
+            ctx.ellipse(width / 2, height + 120, width * 0.75, 200, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 4. Flowers
+            flowers.forEach(flower => {
+                flower.update();
+                flower.draw();
+            });
+
+            // 5. Butterflies
+            butterflies.forEach(b => {
+                b.update();
+                b.draw();
+            });
+
+            // 6. Particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0 || p.size <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onload = function() {
+            animate();
+        };
+
+        // UI Event Listeners
+        const letterModal = document.getElementById('letterModal');
+        const openLetterBtn = document.getElementById('openLetterBtn');
+        const closeLetterBtn = document.getElementById('closeLetterBtn');
+        const closeLetterBtn2 = document.getElementById('closeLetterBtn2');
+        const bloomThousandBtn = document.getElementById('bloomThousandBtn');
+
+        function toggleModal(show) {
+            initAudio();
+            if (show) {
+                letterModal.classList.remove('opacity-0', 'pointer-events-none');
+                letterModal.children[0].classList.remove('scale-90');
+                letterModal.children[0].classList.add('scale-100');
+            } else {
+                letterModal.classList.add('opacity-0', 'pointer-events-none');
+                letterModal.children[0].classList.remove('scale-100');
+                letterModal.children[0].classList.add('scale-90');
+            }
+        }
+
+        openLetterBtn.addEventListener('click', () => toggleModal(true));
+        closeLetterBtn.addEventListener('click', () => toggleModal(false));
+        closeLetterBtn2.addEventListener('click', () => {
+            toggleModal(false);
+            bloomThousandFlowers();
+        });
+
+        bloomThousandBtn.addEventListener('click', bloomThousandFlowers);
+
+        const changeTypeBtn = document.getElementById('changeTypeBtn');
+        const currentFlowerLabel = document.getElementById('currentFlowerLabel');
+        const flowerNames = {
+            'random': 'Flor: Aleatoria',
+            'rose': 'Flor: Rosas 🌹',
+            'tulip': 'Flor: Tulipanes 🌷',
+            'daisy': 'Flor: Margaritas 🌼',
+            'sunflower': 'Flor: Girasoles 🌻',
+            'glowing': 'Flor: Mágicas ✨'
+        };
+
+        changeTypeBtn.addEventListener('click', () => {
+            initAudio();
+            currentTypeIndex = (currentTypeIndex + 1) % flowerTypes.length;
+            const key = flowerTypes[currentTypeIndex];
+            currentFlowerLabel.textContent = flowerNames[key];
+        });
+          const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIcon = document.getElementById('soundIcon');
+
+        soundToggleBtn.addEventListener('click', () => {
+            initAudio();
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundIcon.className = 'fa-solid fa-volume-high text-lg text-amber-300';
+                playChimeSound();
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-lg text-amber-300';
+            }
+        });
+
+        const clearGardenBtn = document.getElementById('clearGardenBtn');
+        clearGardenBtn.addEventListener('click', () => {
+            initAudio();
+            seedInitialGarden();
+        });
+    </script>
+</body>
+</html>
